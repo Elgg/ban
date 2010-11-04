@@ -43,21 +43,3 @@ function ban_admin_menu() {
 		add_submenu_item(elgg_echo('ban:admin_menu'), $url);
 	}
 }
-
-function ban_count_users() {
-	global $CONFIG;
-
-	$query = "SELECT COUNT(*) as total FROM {$CONFIG->dbprefix}users_entity WHERE banned = 'yes'";
-	$total = get_data_row($query);
-	return (int)$total->total;
-}
-
-function ban_get_user_guids($limit = 10, $offset = 0) {
-	global $CONFIG;
-
-	$query = "SELECT guid FROM {$CONFIG->dbprefix}users_entity WHERE banned = 'yes'";
-	$query .= " LIMIT $offset, $limit";
-	$guids = get_data($query);
-	array_walk($guids, create_function('&$v', '$v = $v->guid;'));
-	return $guids;
-}

@@ -2,7 +2,7 @@
 
 $english = array(
 	'ban:profile_link' => 'Ban',
-	'ban:admin_menu' => 'Manage banned users',
+	'ban:admin_menu' => 'Banned users',
 	'ban:add:title' => 'Banning %s',
 	'ban:list:title' => 'Banned users',
 

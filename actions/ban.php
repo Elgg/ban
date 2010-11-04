@@ -12,7 +12,7 @@ if (!$user) {
 $release = time() + $length * 60*60;
 
 if ($release) {
-	$user->annotate('ban', $release);
+	$user->annotate('ban_release', $release);
 }
 $user->ban($reason);
 

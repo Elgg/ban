@@ -8,16 +8,21 @@ function banned_user_view($hook, $type, $return, $params) {
 	}
 }
 
-$offset = (int)get_input('offset');
 
-$guids = ban_get_user_guids(10, $offset);
-$users = array();
-foreach ($guids as $guid) {
-	$users[] = get_entity($guid);
-}
+$joins = array(
+	"JOIN {$CONFIG->dbprefix}users_entity u on e.guid = u.guid",
+);
+
+$params = array(
+	'type'   => 'user',
+	'joins'  => $joins,
+	'wheres' => array("u.banned='yes'"),
+	'full_view' => FALSE,
+);
+
 ?>
 <div class="contentWrapper">
 <?php
-	echo elgg_view_entity_list($users, ban_count_users(), $offset, 10, false);
+	echo elgg_list_entities_from_metadata($params);
 ?>
 </div>
