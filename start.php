@@ -7,6 +7,8 @@ function ban_init() {
 	register_page_handler('ban', 'ban_page_handler');
 	register_elgg_event_handler('pagesetup', 'system', 'ban_admin_menu');
 
+	register_plugin_hook('cron', 'hourly', 'ban_cron');
+
 	elgg_extend_view('css', 'ban/css');
 
 	global $CONFIG;
@@ -43,4 +45,29 @@ function ban_admin_menu() {
 		$url = $CONFIG->wwwroot . 'pg/ban/list/';
 		add_submenu_item(elgg_echo('ban:admin_menu'), $url);
 	}
+}
+
+function ban_cron() {
+	global $CONFIG;
+
+	elgg_set_ignore_access();
+	
+	$params = array(
+		'type'   => 'user',
+		'annotation_names' => array('ban_release'),
+		'joins'  => array("JOIN {$CONFIG->dbprefix}users_entity u on e.guid = u.guid"),
+		'wheres' => array("u.banned='yes'"),
+	);
+
+	$now = time();
+
+	$users = elgg_get_entities_from_annotations($params);
+	foreach ($users as $user) {
+		$details = get_annotations($user->guid, '', '', 'ban_release', '', 0, 1, 0, 'desc');
+		if ($details->value < $now) {
+			$user->unban();
+		}
+	}
+
+	elgg_set_ignore_access(false);
 }
