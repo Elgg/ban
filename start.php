@@ -8,6 +8,7 @@ function ban_init() {
 	register_elgg_event_handler('pagesetup', 'system', 'ban_admin_menu');
 
 	elgg_extend_view('profile/menu/adminlinks', 'ban/user_menu_entry');
+	elgg_extend_view('css', 'ban/css');
 
 	global $CONFIG;
 	$action_path = "{$CONFIG->pluginspath}ban/actions";

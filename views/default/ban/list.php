@@ -21,7 +21,7 @@ $params = array(
 );
 
 ?>
-<div class="contentWrapper">
+<div class="contentWrapper members">
 <?php
 	echo elgg_list_entities_from_metadata($params);
 ?>

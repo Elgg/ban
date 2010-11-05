@@ -8,6 +8,9 @@ $english = array(
 
 	'ban:reason' => 'Reason',
 	'ban:length' => 'Length of time in hours (0 = forever)',
+
+	'ban:hourleft' => '%s hour left',
+	'ban:hoursleft' => '%u hours left',
 	
 );
 
