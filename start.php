@@ -7,12 +7,12 @@ function ban_init() {
 	register_page_handler('ban', 'ban_page_handler');
 	register_elgg_event_handler('pagesetup', 'system', 'ban_admin_menu');
 
-	elgg_extend_view('profile/menu/adminlinks', 'ban/user_menu_entry');
 	elgg_extend_view('css', 'ban/css');
 
 	global $CONFIG;
 	$action_path = "{$CONFIG->pluginspath}ban/actions";
 	register_action('ban', FALSE, "$action_path/ban.php", TRUE);
+	register_action('admin/user/ban', FALSE, "$action_path/ban_redirect.php", TRUE);
 }
 
 function ban_page_handler($page) {
