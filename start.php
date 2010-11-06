@@ -15,7 +15,6 @@ function ban_init() {
 	global $CONFIG;
 	$action_path = "{$CONFIG->pluginspath}ban/actions";
 	register_action('ban', FALSE, "$action_path/ban.php", TRUE);
-	register_action('admin/user/ban', FALSE, "$action_path/ban_redirect.php", TRUE);
 }
 
 function ban_page_handler($page) {
