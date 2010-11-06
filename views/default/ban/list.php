@@ -23,6 +23,11 @@ $params = array(
 ?>
 <div class="contentWrapper members">
 <?php
-	echo elgg_list_entities_from_metadata($params);
+	$list = elgg_list_entities_from_metadata($params);
+	if ($list) {
+		echo $list;
+	} else {
+		echo elgg_echo('ban:none');
+	}
 ?>
 </div>

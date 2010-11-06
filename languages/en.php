@@ -11,6 +11,11 @@ $english = array(
 
 	'ban:hourleft' => '%s hour left',
 	'ban:hoursleft' => '%u hours left',
+
+	'ban:none' => 'No banned users',
+
+	'ban:add:success' => "Banned %s",
+	'ban:add:failure' => 'Failed to ban this user',
 	
 );
 

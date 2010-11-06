@@ -8,6 +8,7 @@ function ban_init() {
 	register_elgg_event_handler('pagesetup', 'system', 'ban_admin_menu');
 
 	register_plugin_hook('cron', 'hourly', 'ban_cron');
+	register_plugin_hook('display', 'view', 'ban_user_menu');
 
 	elgg_extend_view('css', 'ban/css');
 
@@ -44,6 +45,30 @@ function ban_admin_menu() {
 		global $CONFIG;
 		$url = $CONFIG->wwwroot . 'pg/ban/list/';
 		add_submenu_item(elgg_echo('ban:admin_menu'), $url);
+	}
+}
+
+/**
+ * Rewrite ban link to use our code
+ *
+ * @param string $hook   Hook name
+ * @param string $type   Hook type
+ * @param string $return The current view string
+ * @param array  $params Parameters from elgg_view()
+ * @return string
+ */
+function ban_user_menu($hook, $type, $return, $params) {
+	if ($params['view'] == 'profile/menu/adminlinks') {
+		
+		$confirm = elgg_echo('question:areyousure');
+		$ban = elgg_echo('ban');
+		$old_string = "onclick=\"return confirm('$confirm');\">$ban</a>";
+		$new_string = "\">$ban</a>";
+		$return = str_replace($old_string, $new_string, $return);
+
+		$old_string = 'action/admin/user/ban';
+		$new_string = "pg/ban/user/{$params['vars']['entity']->username}/";
+		return str_replace($old_string, $new_string, $return);
 	}
 }
 

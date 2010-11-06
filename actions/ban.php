@@ -6,7 +6,8 @@ $guid = get_input('guid');
 
 $user = get_user($guid);
 if (!$user) {
-
+	register_error('ban:add:failure');
+	forward();
 }
 
 $release = time() + $length * 60*60;
