@@ -12,6 +12,11 @@ echo '<label>' . elgg_echo('ban:length') . '</label>';
 echo elgg_view('input/text', array('internalname' => 'length'));
 echo '</p>';
 
+echo '<p>';
+$options = array(elgg_echo('ban:notify') => 'yes');
+echo elgg_view('input/checkboxes', array('internalname' => 'notify', 'options' => $options));
+echo '</p>';
+
 echo elgg_view('input/hidden', array('internalname' => 'guid', 'value' => $vars['user']->guid));
 
 $referrer = urlencode($_SERVER['HTTP_REFERER']);

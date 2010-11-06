@@ -11,7 +11,7 @@ $num_bans = count_annotations($vars['entity']->guid, '', '', 'ban_release');
 $details = get_annotations($vars['entity']->guid, '', '', 'ban_release', '', 0, 1, 0, 'desc');
 if ($details) {
 	$secs_left = $details[0]->value - time();
-	$hours_left = $secs_left / 3600;
+	$hours_left = round($secs_left / 3600.0);
 	if ($hours_left < 1) {
 		$time_left = sprintf(elgg_echo('ban:hourleft'), '<1');
 	} elseif ($hours_left < 2) {
@@ -20,7 +20,7 @@ if ($details) {
 		$time_left = sprintf(elgg_echo('ban:hoursleft'), $hours_left);
 	}
 } else {
-	$time_left = 'forever';
+	$time_left = elgg_echo('ban:forever');
 	if ($num_bans == 0) {
 		$num_bans = 1;
 	}
