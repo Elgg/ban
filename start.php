@@ -15,6 +15,7 @@ function ban_init() {
 	global $CONFIG;
 	$action_path = "{$CONFIG->pluginspath}ban/actions";
 	register_action('ban', FALSE, "$action_path/ban.php", TRUE);
+	register_action('admin/user/unban', FALSE, "$action_path/unban.php", TRUE);
 }
 
 function ban_page_handler($page) {
@@ -58,7 +59,7 @@ function ban_admin_menu() {
  */
 function ban_user_menu($hook, $type, $return, $params) {
 	if ($params['view'] == 'profile/menu/adminlinks') {
-		
+
 		$confirm = elgg_echo('question:areyousure');
 		$ban = elgg_echo('ban');
 		$old_string = "onclick=\"return confirm('$confirm');\">$ban</a>";
@@ -75,7 +76,7 @@ function ban_cron() {
 	global $CONFIG;
 
 	elgg_set_ignore_access();
-	
+
 	$params = array(
 		'type'   => 'user',
 		'annotation_names' => array('ban_release'),
@@ -84,12 +85,17 @@ function ban_cron() {
 	);
 
 	$now = time();
-
 	$users = elgg_get_entities_from_annotations($params);
+
 	foreach ($users as $user) {
-		$details = get_annotations($user->guid, '', '', 'ban_release', '', 0, 1, 0, 'desc');
-		if ($details->value < $now) {
-			$user->unban();
+		$releases = get_annotations($user->guid, '', '', 'ban_release', '', 0, 1, 0, 'desc');
+
+		foreach ($releases as $release) {
+			if ($release->value < $now) {
+				if ($user->unban()) {
+					$release->delete();
+				}
+			}
 		}
 	}
 

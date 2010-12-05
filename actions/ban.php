@@ -12,11 +12,11 @@ if (!$user) {
 	forward($referrer);
 }
 
-$release = time() + $length * 60*60;
-
-if ($release) {
+if ($length) {
+	$release = time() + $length * 60*60;
 	$user->annotate('ban_release', $release);
 }
+
 $user->ban($reason);
 
 if ($notify !== '0') {
