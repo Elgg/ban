@@ -1,15 +1,26 @@
 <?php
+/**
+// Ban User Managing
+// Start.php elgg 1.8 only
+*/
 
-register_elgg_event_handler('init', 'system', 'ban_init');
+elgg_register_event_handler('init', 'system', 'ban_init');
 
 function ban_init() {
+	
+	// Register a page handler, so we can have nice URLs
 
-	register_page_handler('ban', 'ban_page_handler');
-	register_elgg_event_handler('pagesetup', 'system', 'ban_admin_menu');
-
-	register_plugin_hook('cron', 'hourly', 'ban_cron');
-	register_plugin_hook('display', 'view', 'ban_user_menu');
-
+	elgg_register_page_handler('ban', 'ban_page_handler');
+	
+	// Resister Event Handler
+	elgg_register_event_handler('pagesetup', 'system', 'ban_admin_menu');
+	
+    // Resister Plugin Hook Handler
+	elgg_register_plugin_hook_handler('cron', 'hourly', 'ban_cron');
+	elgg_register_plugin_hook_handler('display', 'view', 'menu:user_hover', 'ban_user_hover_menu');
+	elgg_register_plugin_hook_handler('register', 'menu:user_hover', 'ban_user_hover_menu');
+	
+	// Extend the main css view
 	elgg_extend_view('css', 'ban/css');
 
 	global $CONFIG;
@@ -18,6 +29,7 @@ function ban_init() {
 	register_action('admin/user/unban', FALSE, "$action_path/unban.php", TRUE);
 }
 
+// Ban Page handler
 function ban_page_handler($page) {
 
 	set_context('admin');
@@ -39,13 +51,34 @@ function ban_page_handler($page) {
 	$body = elgg_view_layout('two_column_left_sidebar', '', $content);
 	page_draw($title, $body);
 }
-
+//Admin menu
 function ban_admin_menu() {
 	if (get_context () == 'admin' && isadminloggedin ()) {
 		global $CONFIG;
 		$url = $CONFIG->wwwroot . 'pg/ban/list/';
 		add_submenu_item(elgg_echo('ban:admin_menu'), $url);
 	}
+}
+// hover menu elgg 1.8
+function ban_user_hover_menu($hook, $type, $menu, $params) {
+	$user = $params['entity'];
+	$logged_in_user = elgg_get_logged_in_user_entity();
+
+//don't ban admin himself
+	if ($logged_in_user == $user) {
+		return $menu;
+	}
+
+	$url = "/ban/user/{$params['entity']->username}/guid";
+	$menu[] = ElggMenuItem::factory(array(
+		'name' => 'ban',
+		'text' => elgg_echo('ban:menu'),
+		'href' => $url,
+		'is_action' => true,
+		'section' => 'admin'
+	));
+
+	return $menu;
 }
 
 /**
@@ -57,21 +90,6 @@ function ban_admin_menu() {
  * @param array  $params Parameters from elgg_view()
  * @return string
  */
-function ban_user_menu($hook, $type, $return, $params) {
-	if ($params['view'] == 'profile/menu/adminlinks') {
-
-		$confirm = elgg_echo('question:areyousure');
-		$ban = elgg_echo('ban');
-		$old_string = "onclick=\"return confirm('$confirm');\">$ban</a>";
-		$new_string = "\">$ban</a>";
-		$return = str_replace($old_string, $new_string, $return);
-
-		$old_string = 'action/admin/user/ban';
-		$new_string = "pg/ban/user/{$params['vars']['entity']->username}/";
-		return str_replace($old_string, $new_string, $return);
-	}
-}
-
 function ban_cron() {
 	global $CONFIG;
 
