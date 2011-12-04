@@ -5,7 +5,8 @@ $english = array(
 	'ban:admin_menu' => 'Banned users',
 	'ban:add:title' => 'Banning %s',
 	'ban:list:title' => 'Banned users',
-        'ban:menu' => 'Ban User Menu',
+	'ban:menu' => 'Ban User',
+	'admin:administer_utilities:ban' => 'Ban users list',
 
 	'ban:reason' => 'Reason',
 	'ban:length' => 'Length of time in hours (0 = forever)',

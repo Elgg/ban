@@ -1,0 +1,7 @@
+Questions Elgg 1.8.1 Alpha2
+* Migrate Admin menu to 1.8
+
+Questions Elgg 1.8.1 Alpha 
+* Fix hidden ban menu 
+* Upgrade to Elgg 1.8 functions
+* Upgrade Mainfest.xml

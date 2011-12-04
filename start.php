@@ -14,7 +14,7 @@ function ban_init() {
 	
 	// Resister Event Handler
 	elgg_register_event_handler('pagesetup', 'system', 'ban_admin_menu');
-	
+
     // Resister Plugin Hook Handler
 	elgg_register_plugin_hook_handler('cron', 'hourly', 'ban_cron');
 	elgg_register_plugin_hook_handler('display', 'view', 'menu:user_hover', 'ban_user_hover_menu');
@@ -22,6 +22,10 @@ function ban_init() {
 	
 	// Extend the main css view
 	elgg_extend_view('css', 'ban/css');
+	
+	// Register Ban Admin menu
+	
+	elgg_register_admin_menu_item('administer', 'ban', 'administer_utilities');
 
 	global $CONFIG;
 	$action_path = "{$CONFIG->pluginspath}ban/actions";
@@ -51,20 +55,19 @@ function ban_page_handler($page) {
 	$body = elgg_view_layout('two_column_left_sidebar', '', $content);
 	page_draw($title, $body);
 }
-//Admin menu
-function ban_admin_menu() {
-	if (get_context () == 'admin' && isadminloggedin ()) {
-		global $CONFIG;
-		$url = $CONFIG->wwwroot . 'pg/ban/list/';
-		add_submenu_item(elgg_echo('ban:admin_menu'), $url);
-	}
-}
-// hover menu elgg 1.8
+/**
+ * Add Ban user hover menu for admins
+ *
+ * @param string $hook
+ * @param string $type
+ * @param array  $menu
+ * @param array  $params
+ */
 function ban_user_hover_menu($hook, $type, $menu, $params) {
 	$user = $params['entity'];
 	$logged_in_user = elgg_get_logged_in_user_entity();
 
-//don't ban admin himself
+// don't ban admin himself
 	if ($logged_in_user == $user) {
 		return $menu;
 	}
