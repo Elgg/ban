@@ -15,7 +15,7 @@ function ban_init() {
 	// Resister Event Handler
 	elgg_register_event_handler('pagesetup', 'system', 'ban_admin_menu');
 
-    // Resister Plugin Hook Handler
+        // Resister Plugin Hook Handler
 	elgg_register_plugin_hook_handler('cron', 'hourly', 'ban_cron');
 	elgg_register_plugin_hook_handler('display', 'view', 'menu:user_hover', 'ban_user_hover_menu');
 	elgg_register_plugin_hook_handler('register', 'menu:user_hover', 'ban_user_hover_menu');
@@ -28,7 +28,7 @@ function ban_init() {
 	elgg_register_admin_menu_item('administer', 'ban', 'administer_utilities');
 
 	global $CONFIG;<br />
-    /// Resister Elgg actions
+       // Resister Elgg actions
 	$action_path = "{$CONFIG->pluginspath}ban/actions";
 	elgg_register_action('ban', "$action_path/ban.php");
 	elgg_register_action('/admin/user/unban', "$action_path/unban.php");
