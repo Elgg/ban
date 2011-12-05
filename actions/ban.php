@@ -22,7 +22,7 @@ $user->ban($reason);
 if ($notify !== '0') {
 	$subject = sprintf(elgg_echo('ban:subject'), $CONFIG->site->name);
 	$message = sprintf(elgg_echo('ban:body'), $reason, $length);
-	notify_user($user->guid, get_loggedin_userid(), $subject, $message, null, 'email');
+	notify_user($user->guid, elgg_get_logged_in_user_entity(), $subject, $message, null, 'email');
 }
 
 system_message(sprintf(elgg_echo('ban:add:success'), $user->name));
