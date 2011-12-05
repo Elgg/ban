@@ -17,7 +17,7 @@ $user = get_entity($guid);
 if ($user instanceof ElggUser) {
 	if ($user->unban()) {
 		// remove ban_release annotations.
-		$releases = get_annotations($user->guid, '', '', 'ban_release', '', 0, 10, 0, 'desc');
+		$releases = elgg_get_annotations($user->guid, '', '', 'ban_release', '', 0, 10, 0, 'desc');
 
 		if ($releases) {
 			foreach ($releases as $release) {
