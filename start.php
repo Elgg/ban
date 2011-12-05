@@ -27,10 +27,11 @@ function ban_init() {
 	
 	elgg_register_admin_menu_item('administer', 'ban', 'administer_utilities');
 
-	global $CONFIG;
+	global $CONFIG;<br />
+    /// Resister Elgg actions
 	$action_path = "{$CONFIG->pluginspath}ban/actions";
-	register_action('ban', FALSE, "$action_path/ban.php", TRUE);
-	register_action('admin/user/unban', FALSE, "$action_path/unban.php", TRUE);
+	elgg_register_action('ban', "$action_path/ban.php");
+	elgg_register_action('/admin/user/unban', "$action_path/unban.php");
 }
 
 // Ban Page handler
@@ -109,7 +110,7 @@ function ban_cron() {
 	$users = elgg_get_entities_from_annotations($params);
 
 	foreach ($users as $user) {
-		$releases = get_annotations($user->guid, '', '', 'ban_release', '', 0, 1, 0, 'desc');
+		$releases = elgg_get_annotations($user->guid, '', '', 'ban_release', '', 0, 1, 0, 'desc');
 
 		foreach ($releases as $release) {
 			if ($release->value < $now) {
