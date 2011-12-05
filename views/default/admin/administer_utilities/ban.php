@@ -1,7 +1,7 @@
 <?php
 
 // elgg makes it hard to list entities with an alternate view
-elgg_register_plugin_hook('display', 'view', 'banned_user_view');
+elgg_register_plugin_hook_handler('display', 'view', 'banned_user_view');
 function banned_user_view($hook, $type, $return, $params) {
 	if ($params['view'] == 'profile/listing') {
 		return elgg_view('ban/banned_user', $params['vars']);
