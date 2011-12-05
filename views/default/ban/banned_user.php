@@ -8,7 +8,7 @@ $icon = elgg_view("profile/icon", array(
 
 $num_bans = count_annotations($vars['entity']->guid, '', '', 'ban_release');
 
-$details = get_annotations($vars['entity']->guid, '', '', 'ban_release', '', 0, 1, 0, 'desc');
+$details = elgg_get_annotations($vars['entity']->guid, '', '', 'ban_release', '', 0, 1, 0, 'desc');
 if ($details) {
 	$secs_left = $details[0]->value - time();
 	$hours_left = round($secs_left / 3600.0);
