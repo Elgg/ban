@@ -1,1 +1,1 @@
-Liang Lee <http://community.elgg.org/pg/profile/arsalanlee>
+Liang Lee http://community.elgg.org/pg/profile/arsalanlee
