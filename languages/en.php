@@ -1,12 +1,16 @@
 <?php
+/**
+ * Banned users English language file
+ */
 
 $english = array(
 	'ban:profile_link' => 'Ban',
 	'ban:admin_menu' => 'Banned users',
-	'ban:add:title' => 'Banning %s',
+	'admin:users:ban' => 'Banning user',
 	'ban:list:title' => 'Banned users',
-	'ban:menu' => 'Ban User',
-	'admin:administer_utilities:ban' => 'Ban users list',
+	'ban:menu:ban' => 'Ban',
+	'ban:menu:unban' => 'Unban',
+	'admin:users:ban_list' => 'Banned users',
 
 	'ban:reason' => 'Reason',
 	'ban:length' => 'Length of time in hours (0 = forever)',

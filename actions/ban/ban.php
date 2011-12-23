@@ -1,4 +1,7 @@
 <?php
+/**
+ * Ban user action
+ */
 
 $reason = get_input('reason');
 $length = get_input('length');
@@ -20,10 +23,10 @@ if ($length) {
 $user->ban($reason);
 
 if ($notify !== '0') {
-	$subject = sprintf(elgg_echo('ban:subject'), $CONFIG->site->name);
-	$message = sprintf(elgg_echo('ban:body'), $reason, $length);
+	$subject = elgg_echo('ban:subject', array(elgg_get_site_entity()->name));
+	$message = elgg_echo('ban:body', array($reason, $length));
 	notify_user($user->guid, elgg_get_logged_in_user_entity(), $subject, $message, null, 'email');
 }
 
-system_message(sprintf(elgg_echo('ban:add:success'), $user->name));
+system_message(elgg_echo('ban:add:success', array($user->name)));
 forward($referrer);

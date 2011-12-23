@@ -1,11 +1,8 @@
 <?php
 /**
- * Elgg ban user
+ * Elgg unban action
  *
- * @package Elgg
- * @subpackage Core
  */
-
 
 $access_status = access_get_show_hidden_status();
 access_show_hidden_entities(true);
@@ -17,7 +14,11 @@ $user = get_entity($guid);
 if ($user instanceof ElggUser) {
 	if ($user->unban()) {
 		// remove ban_release annotations.
-		$releases = elgg_get_annotations($user->guid, '', '', 'ban_release', '', 0, 10, 0, 'desc');
+		$releases = elgg_get_annotations(array(
+			'guid' => $user->getGUID(),
+			'annotation_name' => 'ban_release',
+			'limit' => 0,
+		));
 
 		if ($releases) {
 			foreach ($releases as $release) {
@@ -35,4 +36,4 @@ if ($user instanceof ElggUser) {
 
 access_show_hidden_entities($access_status);
 
-forward($_SERVER['HTTP_REFERER']);
+forward(REFERER);

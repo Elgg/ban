@@ -1,60 +1,24 @@
 <?php
 /**
-// Ban User Managing
-// Start.php elgg 1.8 only
-*/
+ * Ban users plugin
+ */
 
 elgg_register_event_handler('init', 'system', 'ban_init');
 
 function ban_init() {
-	
-	// Register a page handler, so we can have nice URLs
 
-	elgg_register_page_handler('ban', 'ban_page_handler');
-	
-	// Resister Event Handler
-	elgg_register_event_handler('pagesetup', 'system', 'ban_admin_menu');
-
-    // Resister Plugin Hook Handler
 	elgg_register_plugin_hook_handler('cron', 'hourly', 'ban_cron');
-	elgg_register_plugin_hook_handler('display', 'view', 'menu:user_hover', 'ban_user_hover_menu');
 	elgg_register_plugin_hook_handler('register', 'menu:user_hover', 'ban_user_hover_menu');
-	
-	// Extend the main css view
-	elgg_extend_view('css', 'ban/css');
-	
-	// Register Ban Admin menu
-	
-	elgg_register_admin_menu_item('administer', 'ban', 'administer_utilities');
 
-	global $CONFIG;
-	$action_path = "{$CONFIG->pluginspath}ban/actions";
-	elgg_register_action('ban', "$action_path/ban.php");
-	elgg_register_action('/admin/user/unban', "$action_path/unban.php");
+	elgg_extend_view('css/admin', 'ban/css');
+	
+	elgg_register_admin_menu_item('administer', 'ban_list', 'users');
+
+	$action_path = elgg_get_plugins_path() . "ban/actions/ban";
+	elgg_register_action('ban/ban', "$action_path/ban.php", 'admin');
+	elgg_register_action('ban/unban', "$action_path/unban.php", 'admin');
 }
 
-// Ban Page handler
-function ban_page_handler($page) {
-
-	set_context('admin');
-	admin_gatekeeper();
-
-	switch ($page[0]) {
-		case "user":
-			$user = get_user_by_username($page[1]);
-			$title = sprintf(elgg_echo('ban:add:title'), $user->name);
-			$content = elgg_view('ban/add', array('user' => $user));
-			break;
-		case "list":
-			$title = elgg_echo('ban:list:title');
-			$content = elgg_view('ban/list');
-			break;
-	}
-
-	$content = elgg_view_title($title) . $content;
-	$body = elgg_view_layout('two_column_left_sidebar', '', $content);
-	page_draw($title, $body);
-}
 /**
  * Add Ban user hover menu for admins
  *
@@ -65,33 +29,35 @@ function ban_page_handler($page) {
  */
 function ban_user_hover_menu($hook, $type, $menu, $params) {
 	$user = $params['entity'];
-	$logged_in_user = elgg_get_logged_in_user_entity();
 
-// don't ban admin himself
-	if ($logged_in_user == $user) {
+	if (elgg_get_logged_in_user_guid() == $user->getGUID) {
 		return $menu;
 	}
 
-	$url = "/ban/user/{$params['entity']->username}/guid";
-	$menu[] = ElggMenuItem::factory(array(
-		'name' => 'ban',
-		'text' => elgg_echo('ban:menu'),
-		'href' => $url,
-		'is_action' => true,
-		'section' => 'admin'
-	));
+	if ($user->isBanned()) {
+		$menu[] = ElggMenuItem::factory(array(
+			'name' => 'unban',
+			'text' => elgg_echo('unban'),
+			'href' => "action/ban/unban?guid=$user->guid",
+			'is_action' => true,
+			'section' => 'admin',
+		));
+	} else {
+		$menu[] = ElggMenuItem::factory(array(
+			'name' => 'ban',
+			'text' => elgg_echo('ban'),
+			'href' => "admin/users/ban?guid=$user->guid",
+			'section' => 'admin',
+		));
+	}
 
 	return $menu;
 }
 
 /**
- * Rewrite ban link to use our code
+ * Unban users whose timeouts have expired
  *
- * @param string $hook   Hook name
- * @param string $type   Hook type
- * @param string $return The current view string
- * @param array  $params Parameters from elgg_view()
- * @return string
+ * @return void
  */
 function ban_cron() {
 	global $CONFIG;
@@ -109,7 +75,12 @@ function ban_cron() {
 	$users = elgg_get_entities_from_annotations($params);
 
 	foreach ($users as $user) {
-		$releases = elgg_get_annotations($user->guid, '', '', 'ban_release', '', 0, 1, 0, 'desc');
+		$releases = elgg_get_annotations(array(
+			'guid' => $user->guid,
+			'annotation_name' => 'ban_release',
+			'limit' => 1,
+			'order' => 'n_table.time_created desc',
+		));
 
 		foreach ($releases as $release) {
 			if ($release->value < $now) {
