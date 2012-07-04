@@ -7,7 +7,7 @@ $reason = get_input('reason');
 $length = get_input('length');
 $guid = get_input('guid');
 $referrer = urldecode(get_input('referrer'));
-$notify = get_input('notify');
+$notify = (bool)get_input('notify');
 
 $user = get_user($guid);
 if (!$user) {
@@ -20,13 +20,18 @@ if ($length) {
 	$user->annotate('ban_release', $release);
 }
 
-$user->ban($reason);
-
-if ($notify !== '0') {
+if ($notify) {
 	$subject = elgg_echo('ban:subject', array(elgg_get_site_entity()->name));
-	$message = elgg_echo('ban:body', array($reason, $length));
+	if ($length == 0) {
+		$message = elgg_echo('ban:body:forever', array($reason));
+	} else {
+		$message = elgg_echo('ban:body', array($reason, $length));
+	}
 	notify_user($user->guid, elgg_get_logged_in_user_entity(), $subject, $message, null, 'email');
 }
+
+$user->annotate('banned', 1);
+$user->ban($reason);
 
 system_message(elgg_echo('ban:add:success', array($user->name)));
 forward($referrer);

@@ -27,6 +27,7 @@ $english = array(
 
 	'ban:subject' => "You have been banned from %s",
 	'ban:body' => "You have been banned for the following reason: \n\n %s \n\n The ban will last %u hours.",
+	'ban:body:forever' => "You have been banned forever for the following reason: \n\n %s.",
 );
 
 add_translation("en", $english);

@@ -1,14 +1,18 @@
 <?php
 /**
  * List banned users
+ *
+ * @todo figure out how to display users in a table
+ *
+ * @uses $vars['limit']
+ * @uses $vars['pagination']
  */
 
 // elgg makes it hard to list entities with an alternate view
 elgg_register_plugin_hook_handler('view', 'user/default', 'banned_user_view');
-function banned_user_view($hook, $type, $return, $params) {
-	return elgg_view('ban/banned_user', $params['vars']);
-}
 
+$pagination = elgg_extract('pagination', $vars, true);
+$limit = elgg_extract('limit', $vars, get_input('limit', 10));
 
 $joins = array(
 	"JOIN {$CONFIG->dbprefix}users_entity u on e.guid = u.guid",
@@ -18,7 +22,9 @@ $params = array(
 	'type'   => 'user',
 	'joins'  => $joins,
 	'wheres' => array("u.banned = 'yes'"),
-	'full_view' => FALSE,
+	'limit' => $limit,
+	'full_view' => false,
+	'pagination' => $pagination,
 );
 
 
@@ -28,3 +34,5 @@ if ($list) {
 } else {
 	echo elgg_echo('ban:none');
 }
+
+elgg_unregister_plugin_hook_handler('view', 'user/default', 'banned_user_view');

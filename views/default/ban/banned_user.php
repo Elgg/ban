@@ -1,4 +1,7 @@
 <?php
+/**
+ * Display a banned user in list
+ */
 
 $icon = elgg_view("profile/icon", array(
 	'entity' => $vars['entity'],
@@ -6,18 +9,27 @@ $icon = elgg_view("profile/icon", array(
 ));
 
 
-$num_bans = count_annotations($vars['entity']->guid, '', '', 'ban_release');
+$num_bans = elgg_get_annotations(array(
+	'guid' => $vars['entity']->guid,
+	'annotation_name' => 'banned',
+	'annotation_calculation' => 'count',
+));
 
-$details = elgg_get_annotations($vars['entity']->guid, '', '', 'ban_release', '', 0, 1, 0, 'desc');
+$details = elgg_get_annotations(array(
+	'guid' => $vars['entity']->guid,
+	'annotation_name' => 'ban_release',
+	'limit' => 1,
+	'order' => 'n_table.time_created desc',
+));
 if ($details) {
 	$secs_left = $details[0]->value - time();
 	$hours_left = round($secs_left / 3600.0);
 	if ($hours_left < 1) {
-		$time_left = sprintf(elgg_echo('ban:hourleft'), '<1');
+		$time_left = elgg_echo('ban:hourleft', array('<1'));
 	} elseif ($hours_left < 2) {
-		$time_left = sprintf(elgg_echo('ban:hourleft'), '1');
+		$time_left = elgg_echo('ban:hourleft', array('1'));
 	} else {
-		$time_left = sprintf(elgg_echo('ban:hoursleft'), $hours_left);
+		$time_left = elgg_echo('ban:hoursleft', array($hours_left));
 	}
 } else {
 	$time_left = elgg_echo('ban:forever');
@@ -27,11 +39,10 @@ if ($details) {
 }
 
 $info = <<<___END
-<div class="ban_column ban_name"><b><a href="{$vars['entity']->getUrl()}">{$vars['entity']->name}</a></b></div>
-<div class="ban_column ban_reason">{$vars['entity']->ban_reason}</div>
-<div class="ban_column ban_count">$num_bans</div>
-<div class="ban_column ban_release">$time_left</div>
-<div class="clearfloat"></div>
+<div class="ban-column ban-name"><b><a href="{$vars['entity']->getUrl()}">{$vars['entity']->name}</a></b></div>
+<div class="ban-column ban-reason">{$vars['entity']->ban_reason}</div>
+<div class="ban-column ban-count">$num_bans</div>
+<div class="ban-column ban-release">$time_left</div>
 ___END;
 
 

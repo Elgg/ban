@@ -1,6 +1,11 @@
 <?php
 /**
  * Ban users plugin
+ *
+ * Elgg core uses the metadata 'ban_reason' for storing the reason for the banning.
+ * We store the release time as a 'ban_release' annotation on the user and we add
+ * a 'banned' annotation to serve as a record that the user has been banned in the
+ * past. This is what allows us to count the number of times the user has been banned.
  */
 
 elgg_register_event_handler('init', 'system', 'ban_init');
@@ -13,6 +18,8 @@ function ban_init() {
 	elgg_extend_view('css/admin', 'ban/css');
 	
 	elgg_register_admin_menu_item('administer', 'ban_list', 'users');
+
+	elgg_register_widget_type('banned_users', elgg_echo('ban:list:title'), elgg_echo('ban:list:title'), 'admin');
 
 	$action_path = elgg_get_plugins_path() . "ban/actions/ban";
 	elgg_register_action('ban/ban', "$action_path/ban.php", 'admin');
@@ -62,7 +69,7 @@ function ban_user_hover_menu($hook, $type, $menu, $params) {
 function ban_cron() {
 	global $CONFIG;
 
-	elgg_set_ignore_access();
+	$previous = elgg_set_ignore_access();
 
 	$params = array(
 		'type'   => 'user',
@@ -91,5 +98,12 @@ function ban_cron() {
 		}
 	}
 
-	elgg_set_ignore_access(false);
+	elgg_set_ignore_access($previous);
+}
+
+/**
+ * Override the user/default view for banned users in banned list
+ */
+function banned_user_view($hook, $type, $return, $params) {
+	return elgg_view('ban/banned_user', $params['vars']);
 }
