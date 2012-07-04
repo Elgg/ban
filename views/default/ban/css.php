@@ -3,16 +3,20 @@
 	margin-right: 1%;
 }
 .ban-name {
-	width: 24%;
+	width: 20%;
 }
 .ban-reason {
-	width: 50%;
+	width: 28%;
 }
 .ban-count {
-	width: 6%;
+	width: 4%;
 	text-align: right;
+	margin-right: 2%;
+}
+.ban-date {
+	width: 24%;
 }
 .ban-release {
-	width: 16%;
+	width: 18%;
 	text-align: right;
 }
