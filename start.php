@@ -37,7 +37,7 @@ function ban_init() {
 function ban_user_hover_menu($hook, $type, $menu, $params) {
 	$user = $params['entity'];
 
-	if (elgg_get_logged_in_user_guid() == $user->getGUID) {
+	if (elgg_get_logged_in_user_guid() == $user->getGUID()) {
 		return $menu;
 	}
 
