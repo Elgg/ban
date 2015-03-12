@@ -19,7 +19,7 @@ function ban_init() {
 	
 	elgg_register_admin_menu_item('administer', 'ban_list', 'users');
 
-	elgg_register_widget_type('banned_users', elgg_echo('ban:list:title'), elgg_echo('ban:list:title'), 'admin');
+	elgg_register_widget_type('banned_users', elgg_echo('ban:list:title'), elgg_echo('ban:list:title'), array('admin'));
 
 	$action_path = elgg_get_plugins_path() . "ban/actions/ban";
 	elgg_register_action('ban/ban', "$action_path/ban.php", 'admin');
