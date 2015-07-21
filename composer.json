@@ -1,0 +1,6 @@
+{
+    "name": "elgg/ban",
+    "description": "Elgg plugin for managing banned users",
+    "type": "elgg-plugin",
+    "license": "MIT"
+}
