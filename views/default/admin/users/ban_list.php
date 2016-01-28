@@ -14,8 +14,9 @@ elgg_register_plugin_hook_handler('view', 'user/default', 'banned_user_view');
 $pagination = elgg_extract('pagination', $vars, true);
 $limit = elgg_extract('limit', $vars, get_input('limit', 10));
 
+$dbprefix = get_config('dbprefix');
 $joins = array(
-	"JOIN {$CONFIG->dbprefix}users_entity u on e.guid = u.guid",
+	"JOIN {$dbprefix}users_entity u on e.guid = u.guid",
 );
 
 $params = array(

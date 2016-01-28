@@ -16,7 +16,7 @@ function ban_init() {
 	elgg_register_plugin_hook_handler('register', 'menu:user_hover', 'ban_user_hover_menu');
 
 	elgg_extend_view('css/admin', 'ban/css');
-	
+
 	elgg_register_admin_menu_item('administer', 'ban_list', 'users');
 
 	elgg_register_widget_type('banned_users', elgg_echo('ban:list:title'), elgg_echo('ban:list:title'), array('admin'));
@@ -67,14 +67,13 @@ function ban_user_hover_menu($hook, $type, $menu, $params) {
  * @return void
  */
 function ban_cron() {
-	global $CONFIG;
-
 	$previous = elgg_set_ignore_access();
 
+	$dbprefix = get_config('dbprefix');
 	$params = array(
 		'type'   => 'user',
 		'annotation_names' => array('ban_release'),
-		'joins'  => array("JOIN {$CONFIG->dbprefix}users_entity u on e.guid = u.guid"),
+		'joins'  => array("JOIN {$dbprefix}users_entity u on e.guid = u.guid"),
 		'wheres' => array("u.banned='yes'"),
 	);
 
